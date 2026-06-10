@@ -4,7 +4,7 @@ Industrial visual inspection systems require models that are accurate, fast, and
 
 ## Goal
 
-This project builds on my previous repository, [CNN Learning Journey](https://github.com/Isaiah1001/CNN-Learning-Journey), which focused on understanding the end-to-end computer vision pipeline and the foundational tools used in deep learning workflows. While that project emphasized learning and experimentation, this repository applies a similar pipeline in a more streamlined and deployment-oriented setting. The focus is placed on data inspection and preparation, model and training strategy selection, compression decisions, and edge deployment planning.
+This project builds on my previous repository, [CNN Learning Journey](https://github.com/Isaiah1001/CNN-Learning-Journey), which focused on understanding the end-to-end computer vision pipeline and the foundational tools used in deep learning workflows. While that project emphasized learning and experimentation, this repository applies a similar pipeline in a more streamlined and deployment-oriented setting. The focus is placed on data inspection and preparation, model and training strategy selection, compression, and edge deployment planning.
 
 ## What This Project Covers
 
@@ -13,7 +13,7 @@ This project builds on my previous repository, [CNN Learning Journey](https://gi
 - Fine-tuning a pre-trained EfficientNet for a domain-specific image classification task.
 - Evaluation of training performance and model behavior.
 - Model compression and export for efficient edge inference.
-- INT8-quantized ONNX deployment and latency-oriented benchmarking on edge-oriented hardware.[web:17][web:45]
+- INT8-quantized ONNX deployment and latency-oriented benchmarking on edge-oriented hardware.
 
 ## Repository Structure
 
@@ -24,6 +24,9 @@ EfficientNet-Fine-Tuning-Edge-Deployment-Pipeline/
 │   ├── split_dataset.py
 │   └── augmentation_policy.py
 ├── 02_model/
+├── 03_Training/
+├── 04_Compression/
+├── 05_Deployment
 ├── requirements.txt
 └── README.md
 ```
