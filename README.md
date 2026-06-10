@@ -1,4 +1,4 @@
-# EfficientNet Fine-Tuning for Edge Deployment Pipeline
+# EfficientNet Fine-Tuning For Edge Deployment Pipeline
 
 Industrial visual inspection systems require models that are accurate, fast, and resource-efficient for deployment on edge devices. This project develops a deployment-oriented computer vision pipeline that covers data preparation, model selection, fine-tuning a pre-trained EfficientNet on domain-specific data, model compression, and INT8 ONNX deployment. It focuses on building a practical and reproducible workflow that balances accuracy, inference latency, and deployment constraints for real-world applications.
 
@@ -24,9 +24,9 @@ EfficientNet-Fine-Tuning-Edge-Deployment-Pipeline/
 │   ├── split_dataset.py
 │   └── augmentation_policy.py
 ├── 02_model/
-├── 03_Training/
-├── 04_Compression/
-├── 05_Deployment
+├── 03_training/
+├── 04_compression/
+├── 05_deployment
 ├── requirements.txt
 └── README.md
 ```
