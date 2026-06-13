@@ -8,7 +8,7 @@ class data_access:
     """
     def __init__(self, data_folder):
         # data path setup
-        self.data_path = os.path.join('../', data_folder)
+        self.data_path = os.path.join('./', data_folder)
         self.image_folder = os.path.join(self.data_path, 'jpg')
         # load all labels, minus 1 to make it zero-indexed
         self.data_labels = loadmat(os.path.join(self.data_path, 'imagelabels.mat'))['labels'][0]-1
