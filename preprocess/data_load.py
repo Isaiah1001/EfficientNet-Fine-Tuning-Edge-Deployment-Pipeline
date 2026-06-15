@@ -1,3 +1,4 @@
+# preprocess/data_load.py
 import os
 from scipy.io import loadmat
 from PIL import Image
@@ -40,8 +41,7 @@ class data_access:
             label (int): loaded label
         """
         
-        data_label = loadmat(os.path.join(self.data_path, 'imagelabels.mat'))
-        label = data_label['labels'][0, index].item()-1
+        label = self.data_labels[index]
         return label
     
     def retrieve_description(self, label):

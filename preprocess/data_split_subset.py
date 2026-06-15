@@ -1,32 +1,28 @@
-from torch.utils.data import random_split
+# preprocess/data_split_subset.py
+from torch.utils.data import Subset
 
-from .subset_class import subsetTrans
-
-# get dataloaders
-def get_dataset(dataset, train_transform, basic_transform, train_size=0.7, val_size=0.15):
-    """create dataloaders for training, validation, and testing
+def get_dataset(dataset,split_data):
+    """Split dataset into three subsets, training, validaion and test
 
     Args:
-        dataset (data_access): dataset object
-        batch_size (int): batch size for dataloaders
-        train_transform (torchvision.transforms.Compose): transform for training data
-        basic_transform (torchvision.transforms.Compose): transform for validation and test data
-        train_size (float, optional): proportion of training data. Defaults to 0.7.
-        val_size (float, optional): proportion of validation data. Defaults to 0.15.
-    Returns:
-        train_loader, val_loader, test_loader: dataloaders for training, validation, and testing
-    """
+        dataset (tuple): loaded dataset
+        split_data (array): splited ID groups
 
-    # calculate sizes
-    total_size = len(dataset)
-    train_size = int(train_size * total_size)
-    val_size = int(val_size * total_size)
-    test_size = total_size - train_size - val_size
-    # split dataset
-    train_dataset, val_dataset, test_dataset = random_split(dataset, [train_size, val_size, test_size])
-    # apply transforms
-    train_dataset = subsetTrans(train_dataset, transform=train_transform)
-    val_dataset = subsetTrans(val_dataset, transform=basic_transform)
-    test_dataset = subsetTrans(test_dataset, transform=basic_transform)
+    Returns:
+        subdatasets: training, valication and test subsets
+    """
     
-    return train_dataset, val_dataset, test_dataset
+    train_ids = split_data["trnid"][0] - 1
+    val_ids   = split_data["valid"][0] - 1
+    test_ids  = split_data["tstid"][0] - 1
+
+    print(f"Train samples: {len(train_ids)}") 
+    print(f"Val samples:   {len(val_ids)}")
+    print(f"Test samples:  {len(test_ids)}")
+
+    # create subsets
+    train_dataset = Subset(dataset, train_ids.tolist())
+    val_dataset   = Subset(dataset, val_ids.tolist())
+    test_dataset  = Subset(dataset, test_ids.tolist())
+
+    return train_dataset, val_dataset, test_dataset 
