@@ -5,6 +5,8 @@ import random
 import matplotlib.pyplot as plt
 from torch.utils.data import  DataLoader
 import torch
+# plot setting
+plt.rcParams['font.family'] = 'Times New Roman'
 
 # =========================
 # 0) Data and Split ID loading
