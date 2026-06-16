@@ -2,7 +2,7 @@
 
 import torchvision.transforms as transforms
 # data manipulate
-def data_manipulate(mean, std):
+def data_manipulate(mean, std, img_size=256):
     """apply data manipulation to the image
 
     Args:
@@ -13,7 +13,7 @@ def data_manipulate(mean, std):
         aug (torchvision.transforms.Compose): basic + augmented transform
     """
     transform_basic = transforms.Compose([
-    transforms.Resize((256, 256)),
+    transforms.Resize((img_size, img_size)),
     transforms.CenterCrop(224),
     transforms.ToTensor(),
     transforms.Normalize(mean=mean, std=std)
