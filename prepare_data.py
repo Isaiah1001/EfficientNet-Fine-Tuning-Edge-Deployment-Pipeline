@@ -18,7 +18,7 @@ dataset = data_access("99_flower_data")
 # Nilsback, M-E. and Zisserman, A. Automated flower classification over a large number of classes.
 # Proceedings of the Indian Conference on Computer Vision, Graphics and Image Processing (2008) 
 # http://www.robots.ox.ac.uk/~vgg/publications/papers/nilsback08.{pdf,ps.gz}.
-split_data = loadmat(f"./setid.mat") 
+split_data = loadmat(f"./99_flower_data/setid.mat") 
 train_dataset, val_dataset, test_dataset = get_dataset(dataset,split_data)
 
 # =========================
