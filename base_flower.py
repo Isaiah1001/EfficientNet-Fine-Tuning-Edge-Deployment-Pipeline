@@ -67,24 +67,27 @@ class FlowerDataModule(pl.LightningDataModule):
         # read data using predefined function
         dataset = data_access(self.hparams.data_path)
         split_data = loadmat(self.hparams.splitid) 
-        self.train_dataset, self.val_dataset, self.test_dataset = get_dataset(dataset,split_data)
-
+        train_dataset, val_dataset, test_dataset = get_dataset(dataset, split_data)
+        self.train_dataset_trans = subsetTrans(train_dataset, self.train_transform)
+        self.val_dataset_trans = subsetTrans(val_dataset, self.basic_transform)
+        self.test_dataset_trans = subsetTrans(test_dataset, self.basic_transform)
+        
     def train_dataloader(self):
         """return training data loader
         """
-        return DataLoader(self.train_dataset, batch_size=self.hparams.bs, num_workers=self.hparams.nw, 
+        return DataLoader(self.train_dataset_trans, batch_size=self.hparams.bs, num_workers=self.hparams.nw, 
                           shuffle=True, pin_memory=False, prefetch_factor=self.hparams.pf, persistent_workers=True)
 
     def val_dataloader(self):
         """return validation data loader
         """
-        return DataLoader(self.val_dataset, batch_size=self.hparams.bs, num_workers=self.hparams.nw, 
+        return DataLoader(self.val_dataset_trans, batch_size=self.hparams.bs, num_workers=self.hparams.nw, 
                           persistent_workers=True, pin_memory=False )
 
     def test_dataloader(self):
         """return test data loader
         """
-        return DataLoader(self.test_dataset, batch_size=self.hparams.bs, num_workers=self.hparams.nw, 
+        return DataLoader(self.test_dataset_trans, batch_size=self.hparams.bs, num_workers=self.hparams.nw, 
                           persistent_workers=True, pin_memory=False)
 
 # ==============================================

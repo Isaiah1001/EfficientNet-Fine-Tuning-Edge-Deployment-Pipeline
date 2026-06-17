@@ -4,7 +4,7 @@
 seed_everything: 42
 
 trainer:
-  max_epochs: 20
+  max_epochs: 40
   max_steps: -1
   accelerator: gpu
   devices: 1
@@ -56,7 +56,7 @@ data:
   pf: 2
   data_path: ./99_flower_data
   splitid: ./99_flower_data/setid.mat
-  
+
 model:
   optimizer:
     class_path: torch.optim.AdamW

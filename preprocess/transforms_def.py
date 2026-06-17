@@ -28,5 +28,5 @@ def data_manipulate(mean, std, img_size=256):
     ])
     # augmentation for training data and basic transform for validation/test data
     basic = transforms.Compose([transform_basic])
-    aug = transforms.Compose([transform_basic, transform_aug])
+    aug = transforms.Compose([transform_aug, transform_basic])
     return basic, aug
