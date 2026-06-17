@@ -1,1 +1,4 @@
 99_flower_data/
+*.ckpt
+*.pth
+*.db
