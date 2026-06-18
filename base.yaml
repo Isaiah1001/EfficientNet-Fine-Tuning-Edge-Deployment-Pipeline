@@ -37,8 +37,8 @@ trainer:
 
     - class_path: base_flower.ProgressiveBackboneFinetuning
       init_args:
-        unfreeze_at_epoch_1: None
-        unfreeze_at_epoch_2: 10
+        unfreeze_at_epoch_1: 10
+        unfreeze_at_epoch_2: 20
 
     - class_path: base_flower.PostFreezeModelSummary
       init_args: {}

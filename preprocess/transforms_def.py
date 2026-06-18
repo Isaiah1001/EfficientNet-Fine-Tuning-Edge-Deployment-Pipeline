@@ -14,7 +14,7 @@ def data_manipulate(mean, std, img_size=256):
     """
     transform_basic = transforms.Compose([
     transforms.Resize((img_size, img_size)),
-    transforms.CenterCrop(224),
+    transforms.CenterCrop(img_size),
     transforms.ToTensor(),
     transforms.Normalize(mean=mean, std=std)
     ])
