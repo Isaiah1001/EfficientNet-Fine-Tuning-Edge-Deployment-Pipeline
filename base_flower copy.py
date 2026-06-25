@@ -6,7 +6,7 @@
 import os
 import torch
 import torchvision.models as tv_models
-from torchvision.transforms import v2
+import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from torchmetrics import Accuracy
 import mlflow
@@ -97,10 +97,7 @@ class FlowerDataModule(pl.LightningDataModule):
 class FlowerLightModule(pl.LightningModule):
     def __init__(self, num_classes: int=102,
                  optimizer: OptimizerCallable = torch.optim.SGD,
-                 scheduler: LRSchedulerCallable = torch.optim.lr_scheduler.ConstantLR,
-                 use_cutmix: bool = True,
-                 cutmix_alpha: float = 1.0,
-                 cutmix_prob: float = 0.5):
+                 scheduler: LRSchedulerCallable = torch.optim.lr_scheduler.ConstantLR):
         """initialize the model module
 
         Args:
@@ -117,7 +114,6 @@ class FlowerLightModule(pl.LightningModule):
         self.lr_scheduler = scheduler
         # Import the pre-trained EfficientNet-B0 model and modify the classifier head.
         self.model = tv_models.efficientnet_b0(weights='IMAGENET1K_V1')
-        self.model.classifier[0] = torch.nn.Dropout(p=0.5, inplace=True)
         in_features = self.model.classifier[1].in_features
         new_fc_layer = torch.nn.Linear(in_features, self.hparams.num_classes)
         self.model.classifier[1] = new_fc_layer
@@ -127,7 +123,6 @@ class FlowerLightModule(pl.LightningModule):
         # Initialize metrics to track accuracy for training and validation.
         self.train_accuracy = Accuracy(task="multiclass", num_classes=self.hparams.num_classes)
         self.val_accuracy = Accuracy(task="multiclass", num_classes=self.hparams.num_classes)
-        self.cutmix = v2.CutMix(num_classes = self.hparams.num_classes,alpha=self.hparams.cutmix_alpha)
     def forward(self, x):
         """
         Defines the forward pass of the model.
@@ -142,25 +137,18 @@ class FlowerLightModule(pl.LightningModule):
         return x
     
     def training_step(self, batch, batch_idx = None):
-        
         # if batch_idx == 0:
         #     print(f"[training_step] self.training       = {self.training}")
         #     print(f"[training_step] self.model.training = {self.model.training}")
         inputs, labels, _ = batch
-        labels = labels.long()
-
-        if self.hparams.use_cutmix and torch.rand(1).item() < self.hparams.cutmix_prob:
-            inputs, labels = self.cutmix(inputs, labels)
-            # labels = labels.float()
-
         outputs = self(inputs)
+        # update and log training loss 
         loss = self.loss_fn(outputs, labels)
-
         bs = inputs.size(0)
-        self.log("train_loss", loss, on_step=False, on_epoch=True, prog_bar=True, batch_size=bs)
 
-        metric_labels = labels.argmax(dim=1) if labels.ndim == 2 else labels
-        self.train_accuracy.update(outputs, metric_labels)
+        self.log("train_loss", loss, on_step=False, on_epoch=True, prog_bar=True, batch_size=bs)
+        # update and log training accuracy
+        self.train_accuracy.update(outputs, labels)
         self.log("train_acc", self.train_accuracy, on_step=False, on_epoch=True, prog_bar=True, batch_size=bs)
         
         return loss
@@ -192,10 +180,6 @@ class FlowerLightModule(pl.LightningModule):
         # scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
         #     optimizer, T_max=10, eta_min=1e-4
         # )
-        # scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-        #     optimizer,
-        #     T_max=self.trainer.max_epochs,
-        #     eta_min=1e-5)
 
         return {
             "optimizer": optimizer,
@@ -227,7 +211,7 @@ class ProgressiveBackboneFinetuning(BaseFinetuning):
     def finetune_function(self, pl_module, epoch, optimizer):
         if (self.unfreeze_at_epoch_1 is not None and epoch == self.unfreeze_at_epoch_1):
             self.unfreeze_and_add_param_group(
-                modules=pl_module.model.features[-3:],
+                modules=pl_module.model.features[-1:],
                 optimizer=optimizer,
                 lr=optimizer.defaults['lr'] * 0.1
                 
@@ -235,14 +219,14 @@ class ProgressiveBackboneFinetuning(BaseFinetuning):
             
         if (self.unfreeze_at_epoch_2 is not None and self.unfreeze_at_epoch_1 is not None and epoch == self.unfreeze_at_epoch_2):
             self.unfreeze_and_add_param_group(
-                modules=pl_module.model.features[:],
+                modules=pl_module.model.features[-3:-1],
                 optimizer=optimizer,
                 lr=optimizer.defaults['lr'] * 0.02
                 # initial_denom_lr=10
             )
         if (self.unfreeze_at_epoch_2 is not None and self.unfreeze_at_epoch_1 is None and epoch == self.unfreeze_at_epoch_2):
             self.unfreeze_and_add_param_group(
-                modules=pl_module.model.features[-5:],
+                modules=pl_module.model.features[-3:],
                 optimizer=optimizer,
                 lr=optimizer.defaults['lr'] * 0.02
                 # initial_denom_lr=10

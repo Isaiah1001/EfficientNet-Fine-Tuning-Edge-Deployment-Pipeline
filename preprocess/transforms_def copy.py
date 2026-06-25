@@ -20,18 +20,14 @@ def data_manipulate(mean, std, img_size=256):
     ])
     
     transform_aug = transforms.Compose([
-        transforms.RandomResizedCrop( img_size, scale=(0.8, 1.0), ratio=(3./4., 4./3.)),
         transforms.RandomHorizontalFlip(p=0.5),
         transforms.RandomVerticalFlip(p=0.5),
         transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.05),
         transforms.RandomGrayscale(p=0.1),
-        transforms.RandomRotation(degrees=10),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=mean, std=std),
-        transforms.RandomErasing(p=0.25, scale=(0.02, 0.1), ratio=(0.3, 3.3)),
+        transforms.RandomRotation(degrees=10)
         
     ])
     # augmentation for training data and basic transform for validation/test data
     basic = transforms.Compose([transform_basic])
-    aug = transforms.Compose([transform_aug])
+    aug = transforms.Compose([transform_aug, transform_basic])
     return basic, aug

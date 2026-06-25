@@ -188,14 +188,14 @@ class FlowerLightModule(pl.LightningModule):
         optimizer = self.optimizer(
             filter(lambda p: p.requires_grad, self.parameters()))
 
-        scheduler = self.lr_scheduler(optimizer)
+        # scheduler = self.lr_scheduler(optimizer)
         # scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
         #     optimizer, T_max=10, eta_min=1e-4
         # )
-        # scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-        #     optimizer,
-        #     T_max=self.trainer.max_epochs,
-        #     eta_min=1e-5)
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+            optimizer,
+            T_max=self.trainer.max_epochs,
+            eta_min=1e-5)
 
         return {
             "optimizer": optimizer,
@@ -227,7 +227,7 @@ class ProgressiveBackboneFinetuning(BaseFinetuning):
     def finetune_function(self, pl_module, epoch, optimizer):
         if (self.unfreeze_at_epoch_1 is not None and epoch == self.unfreeze_at_epoch_1):
             self.unfreeze_and_add_param_group(
-                modules=pl_module.model.features[-3:],
+                modules=pl_module.model.features[-1:],
                 optimizer=optimizer,
                 lr=optimizer.defaults['lr'] * 0.1
                 
@@ -235,14 +235,14 @@ class ProgressiveBackboneFinetuning(BaseFinetuning):
             
         if (self.unfreeze_at_epoch_2 is not None and self.unfreeze_at_epoch_1 is not None and epoch == self.unfreeze_at_epoch_2):
             self.unfreeze_and_add_param_group(
-                modules=pl_module.model.features[:],
+                modules=pl_module.model.features[-3:-1],
                 optimizer=optimizer,
                 lr=optimizer.defaults['lr'] * 0.02
                 # initial_denom_lr=10
             )
         if (self.unfreeze_at_epoch_2 is not None and self.unfreeze_at_epoch_1 is None and epoch == self.unfreeze_at_epoch_2):
             self.unfreeze_and_add_param_group(
-                modules=pl_module.model.features[-5:],
+                modules=pl_module.model.features[-3:],
                 optimizer=optimizer,
                 lr=optimizer.defaults['lr'] * 0.02
                 # initial_denom_lr=10

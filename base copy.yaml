@@ -4,7 +4,7 @@
 seed_everything: 42
 
 trainer:
-  max_epochs: 60
+  max_epochs: 40
   max_steps: -1
   accelerator: gpu
   devices: 1
@@ -17,7 +17,7 @@ trainer:
   logger:
     class_path: lightning.pytorch.loggers.MLFlowLogger
     init_args:
-      experiment_name: training_all
+      experiment_name: pruning
       tracking_uri: sqlite:///mlflow.db
       run_name: "base"        
 
@@ -37,8 +37,8 @@ trainer:
 
     - class_path: base_flower.ProgressiveBackboneFinetuning
       init_args:
-        unfreeze_at_epoch_1: 5
-        unfreeze_at_epoch_2: 10
+        unfreeze_at_epoch_1: 10
+        unfreeze_at_epoch_2: 20
 
     - class_path: base_flower.PostFreezeModelSummary
       init_args: {}

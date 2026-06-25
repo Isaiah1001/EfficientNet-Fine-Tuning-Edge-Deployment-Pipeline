@@ -1,10 +1,10 @@
 {
   "base_ckpt": "/Users/huizhang/Documents/GitHub/EfficientNet-Fine-Tuning-Edge-Deployment-Pipeline/logs/checkpoints/checkpoint_base_epoch=36_val_acc=0.9225.ckpt",
   "pruning_method": "l1_unstructured_global",
-  "sparsity": 0.3,
+  "sparsity": 0.5,
   "params_before": 4138210,
   "params_after": 4138210,
-  "global_sparsity_actual": 0.2904,
-  "finetune_epochs": 10,
+  "global_sparsity_actual": 0.484,
+  "finetune_epochs": 20,
   "lr": 0.0001
 }
